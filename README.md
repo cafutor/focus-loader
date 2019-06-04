@@ -35,8 +35,5 @@ module: {
     ]
   }
 ```
-tips:一般的你可能会需要配置多个入口文件(src/pageOne/index.view,src/pageTwo/index.view,...)
-
-如果你发现了bug（错误截图，浏览器），请发往这个邮箱huangtao19900205@outlook.com
-    
+tips:一般的你可能会需要配置多个入口文件(src/pageOne/index.view,src/pageTwo/index.view,...)    
 
