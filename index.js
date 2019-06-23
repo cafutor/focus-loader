@@ -5,9 +5,8 @@ const { compileView, getView, getImport, matchModel, checkView } = require('./ut
 module.exports = function focusBizLoader(fileString) {
     let compileViewResult
     try {
-        // 检测view是否有其他的代码
-        checkView(fileString);
         compileViewResult = compileView(getView(fileString));
+        checkView(fileString);
     } catch (e) {
         throw new Error(e.message);
     }

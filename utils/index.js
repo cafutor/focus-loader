@@ -87,7 +87,7 @@ module.exports = {
     // check the view is pure or not
     checkView: function (viewFile) {
         const parseCheck = viewFile
-            .replace(/<(\s)*[a-zA-Z0-9]+(\s)?([a-zA-Z0-9]+(="){1}((.(.)?\/)*[a-zA-Z0-9](_|.)*)+\"{1}(\s)*)*(\/)?>(.|\n)*?<(\s)*\/(\s)*[a-zA-Z0-9]+(\s)*>/g, '')
+            .replace(/<(\s)*View{1}(\s)?([a-zA-Z0-9]+(="){1}((.(.)?\/)*[a-zA-Z0-9](_|.)*)+\"{1}(\s)*)*(\/)*>(.|\n)*?<(\s)*\/(\s)*View{1}(\s)*>/g, '')
             .replace(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'(\s)*(\;)?\s]*/g, '');
         if (parseCheck.trim() !== '')
             // eslint-disable-next-line quotes

@@ -1,6 +1,6 @@
 {
   "name": "focus-loader",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "focus loader",
   "main": "none",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "none"
+    "url": "git@github.com:cafutor/focus-loader.git"
   },
   "keywords": [
     "focus",
