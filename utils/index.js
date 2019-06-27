@@ -38,7 +38,7 @@ module.exports = {
                 if (!isHtml(`<${name}>`)) {
                     let attrString = '';
                     let __focusInternalInstanceForJson = '';
-                    // 如果props交给model管理
+                    // if props is marked by @model
                     if (Object.keys(attribs).some((attrKey) => {
                         return (!attribs[attrKey].match(/(this.state)/) && !attribs[attrKey].match(/(\{@model){1}/) && attribs[attrKey].match(/^(@model){1}/))
                     })) {
@@ -47,8 +47,17 @@ module.exports = {
                         attrString += `__focusInternalInstanceId="${internalInstanceKey}-${index}"  `;
                     }
                     for (var i in attribs) {
+                        // if is business component,its props must be marked by @model except exact
                         if (!attribs[i].match(/(this.state)/) && !attribs[i].match(/(\{@model){1}/)) {
-                            attrString += `${i}=${attribs[i].match(/^(@model){1}/) ? `{${attribs[i].replace(/(@model){1}/g, 'this.state')}}` : `"${attribs[i]}"`}  `;
+                            if (i !== 'exact') {
+                                attrString += `${i}=${attribs[i].match(/^(@model){1}/) ? `{${attribs[i].replace(/(@model){1}/g, 'this.state')}}  ` : `"${attribs[i]}"`}  `;
+                            } else {
+                                if (attribs[i] === '') {
+                                    attrString += 'exact={true}  '
+                                } else {
+                                    attrString += `exact=${attribs[i]}  `;
+                                };
+                            };
                             if ((!attribs[i].match(/(this.state)/) && !attribs[i].match(/(\{@model){1}/) && attribs[i].match(/^(@model){1}/)) && __focusInternalInstanceForJson) {
                                 modelPropsSet.push({
                                     __focusInternalInstance: __focusInternalInstanceForJson,
@@ -57,14 +66,14 @@ module.exports = {
                                     prop: i,
                                 });
                             }
-                        }
+                        };
                     }
                     parseView += `<${name} ${attrString} >\n`
                 }
             },
             ontext: function (text) {
                 if (!isHtml(`<${htmlTag}>`) && text.trim()) {
-                    //不加任何的text
+                    //no text
                     // parseView += `${text}\n`;
                 }
             },
@@ -144,8 +153,8 @@ module.exports = {
     },
     // 如果存在model
     matchModel: function (viewFile, model) {
-        if(!model||(model&&!model.trim())){
-            model='focus-center/utils';
+        if (!model || (model && !model.trim())) {
+            model = 'focus-center/utils';
         };
         const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'\s]*/g);
         if (importStatementArr) {
