@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 const htmlparser = require('htmlparser2');
 const isHtml = require('is-html');
 /**
@@ -24,12 +25,20 @@ module.exports = {
         let parseView = '';
         let htmlTag = '';
         let rootId = '';
+        let isUseRouter = !1;
+        let isUseSwitch = !1;
         let dataFromServerKey = '';
         // 如果组件更新的props在model有引用则，直接更新model
         let modelPropsSet = [];
         const parser = new htmlparser.Parser({
             onopentag: function (name, attribs) {
                 htmlTag = name;
+                if (htmlTag === 'Router') {
+                    isUseRouter = !0;
+                };
+                if (htmlTag === 'Switch') {
+                    isUseSwitch = !0;
+                }
                 if (name === 'View') {
                     rootId = attribs.root;
                     dataFromServerKey = attribs.modelFromServerKey || `$${internalInstanceKey}_focus_model_business`;
@@ -86,6 +95,8 @@ module.exports = {
         if (!rootId || !rootId.trim()) throw new Error('view need a root id,please check your index.view');
         if (!customModel) console.warn('there is no model exits in this page');
         return {
+            isUseSwitch,
+            isUseRouter,
             parseView,
             rootId,
             dataFromServerKey,
@@ -151,15 +162,37 @@ module.exports = {
         if (importStatementArr)
             return importStatementArr.join(';\n');
     },
-    // 如果存在model
-    matchModel: function (viewFile, model) {
-        if (!model || (model && !model.trim())) {
-            model = 'focus-center/utils';
-        };
-        const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'\s]*/g);
-        if (importStatementArr) {
-            importStatementArr.push(`import model from '${model}'`);
-            return importStatementArr.join(';\n');
+    setModuleUtils: {
+        setModule: function (viewFile) {
+            const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'\s]*/g);
+            this.importStatementArr = importStatementArr || [];
+            return this;
+        },
+        // if there is model
+        matchModel: function (model) {
+            if (!model || (model && !model.trim())) {
+                model = 'focus-center/utils';
+            };
+            this.importStatementArr.push(`import model from '${model}'`);
+            return this;
+        },
+        // if there is router
+        matchRouter: function (isUseRouter) {
+            if (isUseRouter) this.importStatementArr.push(`import { HashRouter as Router } from 'react-router-dom'`);
+            return this;
+        },
+        // if there is switch
+        matchSwitch: function (isUseSwitch) {
+            if (isUseSwitch) {
+                if (this.importStatementArr.some((importStatement) => {
+                    return !!importStatement.match(/('react-router-dom')$/);
+                })) {
+                    this.importStatementArr.pop();
+                    this.importStatementArr.push(`import { HashRouter as Router,Switch } from 'react-router-dom'`);
+                }
+
+            };
+            return this;
         }
-    },
+    }
 }

@@ -1,7 +1,7 @@
 const nodeFs = require('fs');
 const path = require('path');
 const templatePath = path.join(__dirname, 'viewTemplate', 'view.jsx');
-const { compileView, getView, getImport, matchModel, checkView } = require('./utils');
+const { compileView, getView, getImport, checkView, setModuleUtils } = require('./utils');
 module.exports = function focusBizLoader(fileString) {
     let compileViewResult
     try {
@@ -12,9 +12,9 @@ module.exports = function focusBizLoader(fileString) {
     }
     let importStatement = getImport(fileString);
 
-    const { rootId, dataFromServerKey, parseView, customModel, modelPropsSet } = compileViewResult;
-    // 对接view中的model
-    importStatement = matchModel(fileString, customModel);
+    const { rootId, dataFromServerKey, parseView, customModel, modelPropsSet, isUseRouter,isUseSwitch } = compileViewResult;
+    // get import model
+    importStatement =setModuleUtils.setModule(fileString).matchModel(customModel).matchRouter(isUseRouter).matchSwitch(isUseSwitch).importStatementArr.join(';\n');
     const templateFileString = nodeFs.readFileSync(templatePath).toString();
     const parseResult = templateFileString.replace('$focus_root', `"${rootId}"`)
         .replace('$focus_import_statement', importStatement)
