@@ -1,5 +1,8 @@
 # changelog
 
+## version 1.1.0
+* add spa router support
+
 ## version 1.0.3
 * fix a bug:focus-loader can not recognize multi model
 
