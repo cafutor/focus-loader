@@ -1,6 +1,7 @@
 const nodeFs = require('fs');
 const path = require('path');
-const templatePath = path.join(__dirname, 'viewTemplate', 'view.jsx');
+const { NODE_ENV } = process.env;
+const templatePath = path.join(__dirname, 'viewTemplate', 'View.jsx');
 const { compileView, getView, getImport, checkView, setModuleUtils } = require('./utils');
 module.exports = function focusBizLoader(fileString) {
     let compileViewResult
@@ -12,9 +13,9 @@ module.exports = function focusBizLoader(fileString) {
     }
     let importStatement = getImport(fileString);
 
-    const { rootId, dataFromServerKey, parseView, customModel, modelPropsSet, isUseRouter,isUseSwitch } = compileViewResult;
+    const { rootId, dataFromServerKey, parseView, customModel, modelPropsSet, isUseRouter, isUseSwitch } = compileViewResult;
     // get import model
-    importStatement =setModuleUtils.setModule(fileString).matchModel(customModel).matchRouter(isUseRouter).matchSwitch(isUseSwitch).importStatementArr.join(';\n');
+    importStatement = setModuleUtils.setModule(fileString).matchModel(customModel).matchRouter(isUseRouter).matchSwitch(isUseSwitch).matchHmr(NODE_ENV).importStatementArr.join(';\n');
     const templateFileString = nodeFs.readFileSync(templatePath).toString();
     const parseResult = templateFileString.replace('$focus_root', `"${rootId}"`)
         .replace('$focus_import_statement', importStatement)

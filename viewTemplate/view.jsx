@@ -2,14 +2,33 @@
 // import React from 'react';
 import ReactDOM from 'react-dom';
 import deepEqual from 'react-deep-equal';
-import { saveRootElement,View,Scope,Text,saveRootModelPropsSet} from 'focus-center';
+import { saveRootElement, saveRootModelPropsSet, isUseReduxStore, saveReduxStore, View, Scope, Text, RouteScope } from 'focus-center';
 /*******************************/
 $focus_import_statement
+
+// check model is store or pure model
+function checkModelIsStore(model) {
+    const checkList = ['getState', 'subscribe', 'dispatch', 'replaceReducer'];
+    return checkList.every((checkEl) => {
+        return typeof model[checkEl] === 'function';
+    });
+};
 
 class FocusView extends React.Component {
     constructor(props) {
         super(props);
-        this.state=Object.assign(model||{},window.$focus_data_from_server||{});
+        const isApplicationUseRedux = checkModelIsStore(model);
+        isUseReduxStore(isApplicationUseRedux);
+        if (isApplicationUseRedux) {
+            this.state = model.getState();
+            this.isStoreModel = true;
+            saveReduxStore(model);
+            if(window.$focus_data_from_server){
+                console.warn('if you use redux store,you may not need modelFromServerKey,please check your *.view file');
+            };
+        } else {
+            this.state = Object.assign(model || {}, window.$focus_data_from_server || {});
+        }
     }
     // shouldComponentUpdate(nextProps, nextState) {
     //     return true;
@@ -18,6 +37,13 @@ class FocusView extends React.Component {
     componentWillMount() {
         saveRootElement(this);
         saveRootModelPropsSet($focus_save_root_model_props_set);
+    }
+    componentDidMount() {
+        if (this.isStoreModel) {
+            model.subscribe(() => {
+                this.forceUpdate();
+            });
+        }
     }
     render() {
         return ($focus_view);

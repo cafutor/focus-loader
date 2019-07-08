@@ -56,7 +56,7 @@ module.exports = {
                         attrString += `__focusInternalInstanceId="${internalInstanceKey}-${index}"  `;
                     }
                     for (var i in attribs) {
-                        // if is business component,its props must be marked by @model except exact
+                        // if it is a  business component,its props must be marked by @model except exact
                         if (!attribs[i].match(/(this.state)/) && !attribs[i].match(/(\{@model){1}/)) {
                             if (i !== 'exact') {
                                 attrString += `${i}=${attribs[i].match(/^(@model){1}/) ? `{${attribs[i].replace(/(@model){1}/g, 'this.state')}}  ` : `"${attribs[i]}"`}  `;
@@ -184,13 +184,13 @@ module.exports = {
         // if there is switch
         matchSwitch: function (isUseSwitch) {
             if (isUseSwitch) {
-                if (this.importStatementArr.some((importStatement) => {
-                    return !!importStatement.match(/('react-router-dom')$/);
-                })) {
-                    this.importStatementArr.pop();
-                    this.importStatementArr.push(`import { HashRouter as Router,Switch } from 'react-router-dom'`);
-                }
-
+                this.importStatementArr.push(`import { Switch } from 'focus-center'`);
+            };
+            return this;
+        },
+        matchHmr(nodeEnv) {
+            if (nodeEnv === 'development') {
+                this.importStatementArr.push('if(module.hot){module.hot.accept()}');
             };
             return this;
         }
