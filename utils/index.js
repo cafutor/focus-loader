@@ -108,7 +108,7 @@ module.exports = {
     checkView: function (viewFile) {
         const parseCheck = viewFile
             .replace(/<(\s)*View{1}(\s)?([a-zA-Z0-9]+(="){1}((.(.)?\/)*[a-zA-Z0-9](_|.)*)+\"{1}(\s)*)*(\/)*>(.|\n)*?<(\s)*\/(\s)*View{1}(\s)*>/g, '')
-            .replace(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'(\s)*(\;)?\s]*/g, '');
+            .replace(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s.]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'(\s)*(\;)?\s]*/g, '');
         if (parseCheck.trim() !== '')
             // eslint-disable-next-line quotes
             throw new Error(`please keep your *.view clean,don't write anything else but 
@@ -152,7 +152,7 @@ module.exports = {
         };
     },
     getImport: function (viewFile) {
-        const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'\s]*/g);
+        const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s.]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'(\s)*(\;)?\s]*/g);
         // 检测是否在.view文件import View
         if (importStatementArr && importStatementArr.some((importState) => {
             return importState.match(/(\s)*import(\s)+View/);
@@ -164,7 +164,7 @@ module.exports = {
     },
     setModuleUtils: {
         setModule: function (viewFile) {
-            const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'\s]*/g);
+            const importStatementArr = viewFile.match(/import(?:["'\s]*([\w*{}\n, ]+)from\s*)?["'\s.]*(([@\w/_-]+(.[a-zA-Z0-9]*))|(((.){1}.?\/)([a-zA-Z0-9]+\/)*[a-zA-Z0-9]+(.[a-zA-Z0-9]*)))["'(\s)*(\;)?\s]*/g);
             this.importStatementArr = importStatementArr || [];
             return this;
         },
