@@ -23,7 +23,7 @@ class FocusView extends React.Component {
             this.state = model.getState();
             this.isStoreModel = true;
             saveReduxStore(model);
-            if(window.$focus_data_from_server){
+            if (window.$focus_data_from_server) {
                 console.warn('if you use redux store,you may not need modelFromServerKey,please check your *.view file');
             };
         } else {
@@ -34,7 +34,7 @@ class FocusView extends React.Component {
     //     return true;
     //     return !deepEqual(this.props, nextProps) && !deepEqual(this.state, nextState);
     // }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         saveRootElement(this);
         saveRootModelPropsSet($focus_save_root_model_props_set);
     }

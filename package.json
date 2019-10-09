@@ -1,6 +1,6 @@
 {
   "name": "focus-loader",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "focus loader",
   "main": "none",
   "scripts": {
@@ -24,6 +24,10 @@
     "loader-utils": "^1.2.3"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.3.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.0.1",
     "jest": "^24.8.0"
   }
 }
