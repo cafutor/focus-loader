@@ -1,5 +1,6 @@
 const nodeFs = require('fs');
 const path = require('path');
+// const loaderUtils = require('loader-utils');
 const { NODE_ENV } = process.env;
 const templatePath = path.join(__dirname, 'viewTemplate', 'View.jsx');
 const {
@@ -9,7 +10,9 @@ const {
   checkView,
   setModuleUtils,
 } = require('./utils');
+
 module.exports = function focusBizLoader(fileString) {
+  // const options = loaderUtils.getOptions(this) || {};
   let compileViewResult;
   try {
     compileViewResult = compileView(getView(fileString));
@@ -22,7 +25,7 @@ module.exports = function focusBizLoader(fileString) {
   const {
     rootId,
     dataFromServerKey,
-    parseView,
+    parsedView,
     customModel,
     modelPropsSet,
     isUseRouter,
@@ -41,7 +44,7 @@ module.exports = function focusBizLoader(fileString) {
     .replace(/\$focus_root/g, `"${rootId}"`)
     .replace('$focus_import_statement', importStatement)
     .replace('$focus_data_from_server', dataFromServerKey)
-    .replace('$focus_view', parseView)
+    .replace('$focus_view', parsedView)
     .replace('$focus_save_root_model_props_set', modelPropsSet);
   return Buffer.from(parseResult);
 };

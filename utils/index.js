@@ -2,6 +2,7 @@
 const htmlparser = require('htmlparser2');
 const isHtml = require('is-html');
 const acorn = require('acorn');
+const chalk = require('chalk');
 const jsx = require('acorn-jsx');
 const JSXParser = acorn.Parser.extend(jsx());
 const ecmaVersion = 2022;
@@ -28,7 +29,7 @@ module.exports = {
     const randomKey = Math.random().toString(36).slice(2);
     const internalInstanceKey = '__focusInternalInstance$' + randomKey;
     let index = 0;
-    let parseView = '';
+    let parsedView = '';
     let htmlTag = '';
     let rootId = '';
     let isUseRouter = !1;
@@ -107,17 +108,25 @@ module.exports = {
                 }
               }
             }
-            parseView += `<${name} ${attrString} >\n`;
+            parsedView += `<${name} ${attrString} >\n`;
+          } else {
+            process.stdout.write('\n');
+            process.stdout.write(
+              chalk.yellow(
+                "don't write host compoennt in the view file.eg:div,span,h1... @focus-loader"
+              )
+            );
+            process.stdout.write('\n');
           }
         },
         ontext: function (text) {
           if (!isHtml(`<${htmlTag}>`) && text.trim()) {
             //no text
-            // parseView += `${text}\n`;
+            // parsedView += `${text}\n`;
           }
         },
         onclosetag: function (tagname) {
-          if (!isHtml(`<${tagname}>`)) parseView += `</${tagname}>\n`;
+          if (!isHtml(`<${tagname}>`)) parsedView += `</${tagname}>\n`;
         },
       },
       {
@@ -135,7 +144,7 @@ module.exports = {
     return {
       isUseSwitch,
       isUseRouter,
-      parseView,
+      parsedView,
       rootId,
       dataFromServerKey,
       customModel,
