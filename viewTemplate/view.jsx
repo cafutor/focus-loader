@@ -69,8 +69,15 @@ class FocusView extends React.Component {
  *
  * **/
 
+// fix recreate root when hmr is enabled
 if (document.getElementById($focus_root)) {
-  createRoot(document.getElementById($focus_root)).render(<FocusView />);
+  const property_react_app_container =
+    '$react_focus_app_container' + $focus_root;
+  if (!window[property_react_app_container])
+    window[property_react_app_container] = createRoot(
+      document.getElementById($focus_root)
+    );
+  window[property_react_app_container].render(<FocusView />);
 } else {
   throw new Error(
     'no root container found,please check your *.view file! @focus-loader'
