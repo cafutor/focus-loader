@@ -11,3 +11,9 @@
 
 ## version 1.0.1
 * initial and finish this project
+
+## version 2.x
+* optimize some performance
+
+## version 3.0.0
+* react18 is supported
